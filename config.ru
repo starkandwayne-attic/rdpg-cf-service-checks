@@ -2,12 +2,16 @@ require 'sinatra'
 require 'json'
 require 'pg'
 
-def conn
-	$conn ||= PG.connect( host: creds['hostname'], port: creds['port'], dbname: db_name, user: username)
-end
-
-def creds
-	$creds ||= JSON.parse(ENV['VCAP_SERVICES'])['postgresql-db'].first['credentials']
+before do
+	@message = ""
+	begin
+		@creds ||= JSON.parse(ENV['VCAP_SERVICES'])['rdpg'].first['credentials']
+		@conn ||= PG.connect(@creds['uri'])
+		@node_count = @conn.exec("SELECT count(*) FROM bdr.bdr_nodes;").values.first.first
+	rescue => error
+		@node_count = 0
+		@message = error # Report the error
+	end
 end
 
 get '/' do
@@ -15,16 +19,18 @@ get '/' do
 end
 
 get '/env' do
+	content_type 'application/json'
 	{ :env => ENV.to_h }.to_json
 end
 
 get '/rdpg' do
-	node_count = conn.exec("SELECT count(*) FROM bdr.bdr_nodes;").values.first.first
-	{ :node_count => node_count }.to_json
+	content_type 'application/json'
+	{ :node_count => @node_count, :message => @message }.to_json
 end
 
 get '/postgresql/credentials' do
-	{ :credentials => creds }.to_json
+	content_type 'application/json'
+	{ :credentials => @creds }.to_json
 end
 
 run Sinatra::Application

@@ -21,8 +21,9 @@ Deploy an application to our cloud foundry for testing,
 ```sh
 git clone https://github.com/wayneeseguin/rdpg-cf-service-checks
 cd rdpg-cf-service-checks
-cf push rdpg-cf-service-checks
+cf push
 ```
+Note that this will push application named `rdpg-cf-service-checks` as per `manifest.yml` configuration by default.
 
 Bind the application to the service we created above,
 ```sh
