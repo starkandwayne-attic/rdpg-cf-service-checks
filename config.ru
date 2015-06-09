@@ -5,9 +5,11 @@ require 'pg'
 before do
 	@message = ""
 	begin
-		@creds ||= JSON.parse(ENV['VCAP_SERVICES'])['rdpg'].first['credentials']
+		json = JSON.parse(ENV['VCAP_SERVICES'])
+		@creds ||= json['rdpg'].first['credentials']
 		@conn ||= PG.connect(@creds['uri'])
-		@node_count = @conn.exec("SELECT count(*) FROM bdr.bdr_nodes;").values.first.first
+		result = @conn.exec("SELECT CURRENT_TIMESTAMP;")
+		@node_count = result.values.first.first
 	rescue => error
 		@node_count = 0
 		@message = error # Report the error

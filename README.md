@@ -53,3 +53,21 @@ Application logs can also be examined,
 ```sh
 cf logs rdpg-cf-service-checks --recent
 ```
+
+## Development
+
+Note that in development if the app can not connect to the database there is a 
+workaround.
+```sh
+cat > everything.json <<EOF
+[{ 
+  "destination": "0.0.0.0-255.255.255.255",
+  "protocol": "all" 
+}]
+EOF
+
+cf create-security-group everything everything.json
+
+cf bind-security-group everything ${USER} rdpg
+```
+(The issue is with default bosh-lite security groups)
