@@ -17,22 +17,31 @@ before do
 end
 
 get '/' do
-	"<html><body><h1>RDPG CF Service Checks</h1>Simple application to provide checks for rdpg service from a CF app</body></html>"
+	return <<HTML
+	<html><body><h1>RDPG CF Service Checks</h1>
+	Simple application to provide checks for rdpg service from a CF app
+	<ul>
+	<li><a href="/env">Application Environment</a></li>
+	<li><a href="/rdpg">Database Timestamp Check</a></li>
+	<li><a href="/postgresql/credentials">VCAP_SERVICES rdpg Credentials Check</a></li>
+	</ul>
+	</body></html>
+HTML
 end
 
 get '/env' do
 	content_type 'application/json'
-	{ :env => ENV.to_h }.to_json
+	JSON.pretty_generate({ :env => ENV.to_h })
 end
 
 get '/rdpg' do
 	content_type 'application/json'
-	{ :node_count => @node_count, :message => @message }.to_json
+	JSON.pretty_generate({ :node_count => @node_count, :message => @message })
 end
 
 get '/postgresql/credentials' do
 	content_type 'application/json'
-	{ :credentials => @creds }.to_json
+	JSON.pretty_generate({ :credentials => @creds })
 end
 
 run Sinatra::Application
