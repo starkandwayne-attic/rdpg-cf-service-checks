@@ -3,15 +3,13 @@ require 'json'
 require 'pg'
 
 before do
-	@message = ""
 	begin
 		json = JSON.parse(ENV['VCAP_SERVICES'])
 		@creds ||= json['rdpg'].first['credentials']
 		@conn ||= PG.connect(@creds['uri'])
 		result = @conn.exec("SELECT CURRENT_TIMESTAMP;")
-		@node_count = result.values.first.first
+		@message = result.values.first.first
 	rescue => error
-		@node_count = 0
 		@message = error # Report the error
 	end
 end
@@ -36,7 +34,7 @@ end
 
 get '/rdpg' do
 	content_type 'application/json'
-	JSON.pretty_generate({ :node_count => @node_count, :message => @message })
+	JSON.pretty_generate({ :message => @message })
 end
 
 get '/postgresql/credentials' do
