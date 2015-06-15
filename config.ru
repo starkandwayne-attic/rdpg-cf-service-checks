@@ -6,7 +6,7 @@ before do
 	begin
 		json = JSON.parse(ENV['VCAP_SERVICES'])
 		@creds ||= json['rdpg'].first['credentials']
-		@conn ||= PG.connect(@creds['uri'])
+		@conn ||= PG.connect(@creds['dsn'])
 		result = @conn.exec("SELECT CURRENT_TIMESTAMP;")
 		@message = result.values.first.first
 	rescue => error
