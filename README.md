@@ -9,7 +9,7 @@ workflow below in order to provision a service instances and then bind this appl
 
 Create a service instance,
 ```sh
-cf create-service rdpg small rdpg-service-1
+cf create-service rdpg shared rdpg-service-1
 ```
 
 We can see the service listed now,
