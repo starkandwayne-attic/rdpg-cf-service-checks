@@ -61,6 +61,15 @@ get '/hi/insert' do
 	JSON.pretty_generate(res.values)
 end
 
+post '/hi/insert' do
+	key = params["key"].to_s
+	value = params["value"].to_s
+	@conn.prepare('hiinsert', 'INSERT INTO hi.hi (key,value) VALUES ($1,$2);')
+	res = @conn.exec_prepared('hiinsert', [key,value])
+	content_type 'application/json'
+	JSON.pretty_generate(res.values)
+end
+
 get '/hi/query' do
 	res = @conn.exec("SELECT * from hi.hi;")
 	content_type 'application/json'
