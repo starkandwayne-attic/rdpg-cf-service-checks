@@ -19,7 +19,7 @@ cf services
 
 Deploy an application to our cloud foundry for testing,
 ```sh
-git clone https://github.com/wayneeseguin/rdpg-cf-service-checks
+git clone https://github.com/starkandwayne/rdpg-cf-service-checks
 cd rdpg-cf-service-checks
 cf push -b ruby_buildpack
 ```
