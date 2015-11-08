@@ -5,7 +5,7 @@ require 'pg'
 before do
 	begin
 		json = JSON.parse(ENV['VCAP_SERVICES'])
-		@creds ||= json['postgres'].first['credentials']
+		@creds ||= json.first[1].first['credentials']
 		@conn ||= PG.connect(@creds['dsn'])
 		result = @conn.exec("SELECT CURRENT_TIMESTAMP;")
 		@message = result.values.first.first
