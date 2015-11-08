@@ -5,12 +5,14 @@ require 'pg'
 before do
 	begin
 		json = JSON.parse(ENV['VCAP_SERVICES'])
-		@creds ||= json.first[1].first['credentials']
-		@conn ||= PG.connect(@creds['dsn'])
+		@creds = json.first[1].first['credentials']
+		puts "uri: #{@creds['uri']}"
+		@conn = PG.connect(@creds['uri'])
 		result = @conn.exec("SELECT CURRENT_TIMESTAMP;")
 		@message = result.values.first.first
-	rescue => error
-		@message = error # Report the error
+	rescue => error # Report the error
+		puts error
+		@message = error
 	end
 end
 
